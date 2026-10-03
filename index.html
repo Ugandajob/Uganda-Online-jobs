@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KaziUganda</title><style>
+body{margin:0;background:#f4f8f1;font-family:Arial;color:#12301f}.wrap{max-width:760px;margin:auto;padding:24px 20px 100px}
+header{display:flex;justify-content:space-between;align-items:center;background:#fff;padding:16px 20px;border-radius:22px}.logo{background:#075b3d;color:#d8ff94;padding:13px 16px;border-radius:15px;font-weight:900}.card{background:white;border-radius:28px;padding:24px;margin-top:20px;box-shadow:0 10px 30px #164a2815}
+h1{font-size:42px;letter-spacing:-2px}.balance{background:linear-gradient(135deg,#0b7048,#075333);color:white}.amount{font-size:48px;font-weight:900}.btn{border:0;background:#075b3d;color:white;padding:12px 17px;border-radius:12px;font-weight:700;cursor:pointer}.input{width:100%;padding:13px;margin:7px 0 12px;border:1px solid #d9e3da;border-radius:11px;box-sizing:border-box}.job{border:1px solid #e0e9e1;border-radius:18px;padding:16px;margin:12px 0}.muted{color:#69776f}.row{display:flex;gap:10px;flex-wrap:wrap}</style></head>
+<body><div class="wrap">
+<header><div><span class="logo">U</span> <b>KaziUganda</b></div><button class="btn" onclick="logout()">Logout</button></header>
+<section class="card"><div class="muted">YOUR UGANDA WORKSPACE</div><h1 id="welcome">Welcome</h1><p class="muted">Jobs, wallet and account activity in one place.</p></section>
+<section class="card balance"><div>AVAILABLE BALANCE</div><div class="amount" id="balance">UGX 0</div><p>Wallet balance</p>
+<div class="row"><input id="withdraw" class="input" style="max-width:260px" type="number" placeholder="Amount in UGX"><button class="btn" onclick="withdraw()">Request withdrawal</button></div></section>
+<section class="card"><h2>Available Uganda Jobs</h2><div id="jobs">Loading...</div></section>
+<section class="card"><h2>Account</h2><div id="account"></div></section>
+</div>
+<script>
+async function api(url,opt){let r=await fetch(url,opt);let j=await r.json();if(!r.ok)throw Error(j.error||"Request failed");return j}
+async function load(){
+ try{let u=await api("/api/me");document.getElementById("welcome").textContent="Welcome back, "+u.name;document.getElementById("balance").textContent="UGX "+u.balance.toLocaleString();document.getElementById("account").innerHTML="<b>"+u.email+"</b><br>Role: "+u.role;
+ let jobs=await api("/api/jobs");document.getElementById("jobs").innerHTML=jobs.length?jobs.map(j=>`<div class="job"><b>${j.title}</b><br><span class="muted">${j.company} · ${j.location}</span><p>${j.description}</p><button class="btn">Apply</button></div>`).join(""):"No jobs posted yet.";
+ }catch(e){location.href="/login.html"}}
+async function withdraw(){try{let amount=Number(document.getElementById("withdraw").value);let r=await api("/api/withdraw",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({amount})});alert(r.message+" Reference: "+r.reference);load()}catch(e){alert(e.message)}}
+async function logout(){await api("/api/logout",{method:"POST"});location.href="/login.html"} load();
+</script></body></html>
