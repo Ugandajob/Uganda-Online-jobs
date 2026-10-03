@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS transactions(
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(session({secret:process.env.SESSION_SECRET||"change-this-secret",resave:false,saveUninitialized:false,cookie:{httpOnly:true}}));
-app.use(express.static(path.join(__dirname,"public")));
+https://uganda-online-jobs.onrender.com
 
 function auth(req,res,next){if(!req.session.user)return res.status(401).json({error:"Login required"});next();}
 function admin(req,res,next){if(!req.session.user||req.session.user.role!=="admin")return res.status(403).json({error:"Admin only"});next();}
@@ -81,5 +81,5 @@ app.post("/api/admin/jobs",admin,(req,res)=>{
  res.json({ok:true,id:r.lastInsertRowid});
 });
 
-app.get("*",(req,res)=>res.sendFile(path.join(__dirname,"public","index.html")));
+app.get("*",(req,res)=>res.sendFile(path.join(__dirname,"index.html")));
 app.listen(process.env.PORT||3000,()=>console.log("KaziUganda running on port "+(process.env.PORT||3000)));
