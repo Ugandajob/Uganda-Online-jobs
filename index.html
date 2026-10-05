@@ -1,23 +1,421 @@
-<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>KaziUganda</title><style>
-body{margin:0;background:#f4f8f1;font-family:Arial;color:#12301f}.wrap{max-width:760px;margin:auto;padding:24px 20px 100px}
-header{display:flex;justify-content:space-between;align-items:center;background:#fff;padding:16px 20px;border-radius:22px}.logo{background:#075b3d;color:#d8ff94;padding:13px 16px;border-radius:15px;font-weight:900}.card{background:white;border-radius:28px;padding:24px;margin-top:20px;box-shadow:0 10px 30px #164a2815}
-h1{font-size:42px;letter-spacing:-2px}.balance{background:linear-gradient(135deg,#0b7048,#075333);color:white}.amount{font-size:48px;font-weight:900}.btn{border:0;background:#075b3d;color:white;padding:12px 17px;border-radius:12px;font-weight:700;cursor:pointer}.input{width:100%;padding:13px;margin:7px 0 12px;border:1px solid #d9e3da;border-radius:11px;box-sizing:border-box}.job{border:1px solid #e0e9e1;border-radius:18px;padding:16px;margin:12px 0}.muted{color:#69776f}.row{display:flex;gap:10px;flex-wrap:wrap}</style></head>
-<body><div class="wrap">
-<header><div><span class="logo">U</span> <b>KaziUganda</b></div><button class="btn" onclick="logout()">Logout</button></header>
-<section class="card"><div class="muted">YOUR UGANDA WORKSPACE</div><h1 id="welcome">Welcome</h1><p class="muted">Jobs, wallet and account activity in one place.</p></section>
-<section class="card balance"><div>AVAILABLE BALANCE</div><div class="amount" id="balance">UGX 0</div><p>Wallet balance</p>
-<div class="row"><input id="withdraw" class="input" style="max-width:260px" type="number" placeholder="Amount in UGX"><button class="btn" onclick="withdraw()">Request withdrawal</button></div></section>
-<section class="card"><h2>Available Uganda Jobs</h2><div id="jobs">Loading...</div></section>
-<section class="card"><h2>Account</h2><div id="account"></div></section>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>NovaFX — Forex Trading</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  background:#07111f;
+  color:#fff;
+  line-height:1.5;
+}
+
+header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:20px 7%;
+  background:#081522;
+  border-bottom:1px solid #193047;
+}
+
+.logo{
+  font-size:25px;
+  font-weight:800;
+  color:#35d07f;
+}
+
+nav a{
+  color:#c9d5e2;
+  text-decoration:none;
+  margin-left:25px;
+}
+
+.btn{
+  display:inline-block;
+  padding:13px 22px;
+  border-radius:8px;
+  text-decoration:none;
+  font-weight:bold;
+}
+
+.btn-primary{
+  background:#35d07f;
+  color:#04100a;
+}
+
+.btn-dark{
+  border:1px solid #29435c;
+  color:white;
+}
+
+.hero{
+  padding:80px 7%;
+  display:grid;
+  grid-template-columns:1.2fr 1fr;
+  gap:50px;
+  align-items:center;
+}
+
+.hero h1{
+  font-size:52px;
+  line-height:1.08;
+  margin-bottom:20px;
+}
+
+.hero h1 span{
+  color:#35d07f;
+}
+
+.hero p{
+  color:#9fb0c2;
+  font-size:18px;
+  max-width:600px;
+  margin-bottom:30px;
+}
+
+.hero-buttons{
+  display:flex;
+  gap:15px;
+  flex-wrap:wrap;
+}
+
+.dashboard{
+  background:#0c1b2b;
+  border:1px solid #1d354b;
+  border-radius:18px;
+  padding:22px;
+  box-shadow:0 20px 60px rgba(0,0,0,.3);
+}
+
+.dashboard-top{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:20px;
+}
+
+.balance{
+  font-size:28px;
+  font-weight:bold;
+}
+
+.profit{
+  color:#35d07f;
+  font-size:14px;
+}
+
+.chart{
+  height:210px;
+  border-radius:12px;
+  background:
+    linear-gradient(180deg,rgba(53,208,127,.08),transparent),
+    #081522;
+  position:relative;
+  overflow:hidden;
+}
+
+.chart svg{
+  width:100%;
+  height:100%;
+}
+
+.market-section{
+  padding:30px 7% 80px;
+}
+
+.market-section h2{
+  margin-bottom:20px;
+  font-size:30px;
+}
+
+.market-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:18px;
+}
+
+.market-card{
+  background:#0c1b2b;
+  border:1px solid #1d354b;
+  padding:20px;
+  border-radius:14px;
+}
+
+.pair{
+  color:#a9b8c8;
+  font-size:14px;
+}
+
+.price{
+  font-size:24px;
+  font-weight:bold;
+  margin:8px 0;
+}
+
+.up{
+  color:#35d07f;
+}
+
+.down{
+  color:#ff6875;
+}
+
+.features{
+  padding:60px 7%;
+  background:#081522;
+}
+
+.features h2{
+  text-align:center;
+  font-size:32px;
+  margin-bottom:35px;
+}
+
+.feature-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:20px;
+}
+
+.feature{
+  padding:25px;
+  background:#0c1b2b;
+  border:1px solid #1d354b;
+  border-radius:14px;
+}
+
+.feature-icon{
+  font-size:30px;
+  margin-bottom:12px;
+}
+
+.feature h3{
+  margin-bottom:8px;
+}
+
+.feature p{
+  color:#9fb0c2;
+}
+
+.notice{
+  margin:40px 7%;
+  padding:18px 22px;
+  border-radius:10px;
+  background:#102238;
+  border:1px solid #25445e;
+  color:#b8c7d6;
+  font-size:14px;
+}
+
+footer{
+  text-align:center;
+  padding:35px;
+  color:#718398;
+  border-top:1px solid #193047;
+}
+
+@media(max-width:800px){
+  nav{
+    display:none;
+  }
+
+  .hero{
+    grid-template-columns:1fr;
+    padding-top:55px;
+  }
+
+  .hero h1{
+    font-size:40px;
+  }
+
+  .market-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .feature-grid{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:500px){
+  .market-grid{
+    grid-template-columns:1fr;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">NovaFX</div>
+
+  <nav>
+    <a href="#markets">Markets</a>
+    <a href="#features">Features</a>
+    <a href="#about">About</a>
+  </nav>
+
+  <a href="#" class="btn btn-primary">Open Demo Account</a>
+</header>
+
+<section class="hero">
+
+  <div>
+    <h1>
+      Trade the world's
+      <span>financial markets.</span>
+    </h1>
+
+    <p>
+      Explore forex markets with a modern trading experience,
+      powerful market tools and a secure account dashboard.
+    </p>
+
+    <div class="hero-buttons">
+      <a href="#" class="btn btn-primary">Start Demo Trading</a>
+      <a href="#markets" class="btn btn-dark">View Markets</a>
+    </div>
+  </div>
+
+  <div class="dashboard">
+
+    <div class="dashboard-top">
+      <div>
+        <div style="color:#9fb0c2;font-size:13px">
+          DEMO ACCOUNT
+        </div>
+
+        <div class="balance">
+          $10,000.00
+        </div>
+      </div>
+
+      <div class="profit">
+        +2.84%
+      </div>
+    </div>
+
+    <div class="chart">
+
+      <svg viewBox="0 0 600 210"
+           preserveAspectRatio="none">
+
+        <polyline
+          points="0,170 45,155 85,165 125,130 170,145
+                  210,110 255,125 300,80 345,95
+                  390,70 435,90 480,50 530,70 600,25"
+          fill="none"
+          stroke="#35d07f"
+          stroke-width="4"/>
+
+        <polyline
+          points="0,210 0,170 45,155 85,165 125,130
+                  170,145 210,110 255,125 300,80
+                  345,95 390,70 435,90 480,50
+                  530,70 600,25 600,210"
+          fill="rgba(53,208,127,.08)"
+          stroke="none"/>
+      </svg>
+
+    </div>
+
+  </div>
+
+</section>
+
+<section class="market-section" id="markets">
+
+  <h2>Popular Markets</h2>
+
+  <div class="market-grid">
+
+    <div class="market-card">
+      <div class="pair">EUR/USD</div>
+      <div class="price">1.0842</div>
+      <div class="up">+0.42%</div>
+    </div>
+
+    <div class="market-card">
+      <div class="pair">GBP/USD</div>
+      <div class="price">1.2731</div>
+      <div class="up">+0.31%</div>
+    </div>
+
+    <div class="market-card">
+      <div class="pair">USD/JPY</div>
+      <div class="price">149.62</div>
+      <div class="down">-0.18%</div>
+    </div>
+
+    <div class="market-card">
+      <div class="pair">AUD/USD</div>
+      <div class="price">0.6548</div>
+      <div class="up">+0.27%</div>
+    </div>
+
+  </div>
+
+</section>
+
+<section class="features" id="features">
+
+  <h2>Built for Modern Traders</h2>
+
+  <div class="feature-grid">
+
+    <div class="feature">
+      <div class="feature-icon">📊</div>
+      <h3>Market Analysis</h3>
+      <p>
+        Monitor currency markets and analyse price movements
+        from one convenient dashboard.
+      </p>
+    </div>
+
+    <div class="feature">
+      <div class="feature-icon">🔐</div>
+      <h3>Account Security</h3>
+      <p>
+        Designed with secure account access and responsible
+        handling of customer information.
+      </p>
+    </div>
+
+    <div class="feature">
+      <div class="feature-icon">📱</div>
+      <h3>Mobile Friendly</h3>
+      <p>
+        Access your trading dashboard from phones, tablets
+        and desktop devices.
+      </p>
+    </div>
+
+  </div>
+
+</section>
+
+<div class="notice">
+  <strong>Risk notice:</strong>
+  Forex and leveraged trading involve significant risk and
+  may not be suitable for every investor. This website currently
+  displays a demonstration trading interface and does not represent
+  a live brokerage service.
 </div>
-<script>
-async function api(url,opt){let r=await fetch(url,opt);let j=await r.json();if(!r.ok)throw Error(j.error||"Request failed");return j}
-async function load(){
- try{let u=await api("/api/me");document.getElementById("welcome").textContent="Welcome back, "+u.name;document.getElementById("balance").textContent="UGX "+u.balance.toLocaleString();document.getElementById("account").innerHTML="<b>"+u.email+"</b><br>Role: "+u.role;
- let jobs=await api("/api/jobs");document.getElementById("jobs").innerHTML=jobs.length?jobs.map(j=>`<div class="job"><b>${j.title}</b><br><span class="muted">${j.company} · ${j.location}</span><p>${j.description}</p><button class="btn">Apply</button></div>`).join(""):"No jobs posted yet.";
- }catch(e){location.href="/login.html"}}
-async function withdraw(){try{let amount=Number(document.getElementById("withdraw").value);let r=await api("/api/withdraw",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({amount})});alert(r.message+" Reference: "+r.reference);load()}catch(e){alert(e.message)}}
-async function logout(){await api("/api/logout",{method:"POST"});location.href="/login.html"} load();
-</script></body></html>
+
+<footer id="about">
+  © 2026 NovaFX. All rights reserved.
+</footer>
+
+</body>
+</html>
